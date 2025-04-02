@@ -1,7 +1,7 @@
 services:
   stats-db:
     image: postgres:16.1
-    container_name: postgres
+    container_name: postgres-stats-db
     ports:
       - "5432:5432"
     environment:
@@ -29,9 +29,9 @@ services:
 
   ewm-db:
     image: postgres:16.1
-    container_name: ewm-db
+    container_name: postgres-ewm-db
     ports:
-      - "6432:5432"
+      - "6432:6432"
     environment:
       - POSTGRES_PASSWORD=12345
       - POSTGRES_USER=user
@@ -51,6 +51,6 @@ services:
     depends_on:
       - ewm-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:6432/ewm_db
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=12345
