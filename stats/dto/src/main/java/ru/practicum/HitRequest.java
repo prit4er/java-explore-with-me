@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class HitRequest {
-
     @NotNull
     private String app;
     private String uri;

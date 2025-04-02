@@ -1,6 +1,6 @@
 package ru.practicum.stats;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +11,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping
 public class StatsController {
 
     private final StatsService statsService;
+
+    @Autowired
+    public StatsController(StatsService statsService) {
+        this.statsService = statsService;
+    }
 
     @PostMapping("/hit")
     public ResponseEntity<Void> hit(@RequestBody HitRequest hitRequest) {
