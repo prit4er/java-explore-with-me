@@ -10,6 +10,7 @@ public class HitRequest {
 
     @NotNull
     private String app;
+    @NotNull
     private String uri;
     @NotNull
     private String ip;
