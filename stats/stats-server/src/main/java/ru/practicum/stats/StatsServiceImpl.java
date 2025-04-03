@@ -21,18 +21,22 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public void hit(HitRequest hitDto) {
-        Hit hit = HitMapper.toEntity(hitDto);
-        hitRepository.save(hit);
+        hitRepository.save(HitMapper.toEntity(hitDto));
     }
 
     @Override
-    public List<ViewStats> stats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
-        if (unique) {
-            return (uris == null) ? hitRepository.findUniqueHitsWithoutUri(start, end)
-                                  : hitRepository.findUniqueHitsWithUri(start, end, uris);
-        } else {
-            return (uris == null) ? hitRepository.findHitsWithoutUri(start, end)
-                                  : hitRepository.findHitsWithUri(start, end, uris);
-        }
+    public List<ViewStats> stats(LocalDateTime start, LocalDateTime end,
+                                 List<String> uris, boolean unique) {
+        List<Object[]> results = unique ?
+                                 hitRepository.findUniqueStats(start, end, uris) :
+                                 hitRepository.findAllStats(start, end, uris);
+
+        return results.stream()
+                      .map(r -> new ViewStats(
+                              (String) r[0],
+                              (String) r[1],
+                              ((Number) r[2]).longValue()
+                      ))
+                      .toList();
     }
 }
