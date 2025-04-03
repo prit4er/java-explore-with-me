@@ -10,38 +10,38 @@ import java.util.List;
 
 public interface HitRepository extends JpaRepository<Hit, Long> {
 
-    @Query("SELECT new ru.practicum.ViewStats(h.app, h.uri, COUNT(DISTINCT h.ip)) " +
+    @Query("SELECT h.app, h.uri, COUNT(DISTINCT h.ip) AS hits " +
             "FROM Hit h " +
-            "WHERE h.timestamp BETWEEN :start AND :end " +
-            "AND (:uris IS NULL OR h.uri IN :uris) " +
+            "WHERE h.timestamp BETWEEN ?1 AND ?2 " +
+            "AND h.uri IN ?3 " +
             "GROUP BY h.app, h.uri " +
             "ORDER BY COUNT(DISTINCT h.ip) DESC")
     List<ViewStats> findUniqueHitsWithUri(@Param("start") LocalDateTime start,
                                           @Param("end") LocalDateTime end,
                                           @Param("uris") List<String> uris);
 
-    @Query("SELECT new ru.practicum.ViewStats(h.app, h.uri, COUNT(DISTINCT h.ip)) " +
+    @Query("SELECT h.app, h.uri, COUNT(DISTINCT h.ip) AS hits " +
             "FROM Hit h " +
-            "WHERE h.timestamp BETWEEN :start AND :end " +
+            "WHERE h.timestamp BETWEEN ?1 AND ?2 " +
             "GROUP BY h.app, h.uri " +
             "ORDER BY COUNT(DISTINCT h.ip) DESC")
     List<ViewStats> findUniqueHitsWithoutUri(@Param("start") LocalDateTime start,
                                              @Param("end") LocalDateTime end);
 
-    @Query("SELECT new ru.practicum.ViewStats(h.app, h.uri, COUNT(h.id)) " +
+    @Query("SELECT h.app, h.uri, COUNT(h.id) AS hits " +
             "FROM Hit h " +
-            "WHERE h.timestamp BETWEEN :start AND :end " +
+            "WHERE h.timestamp BETWEEN ?1 AND ?2 " +
             "GROUP BY h.app, h.uri " +
             "ORDER BY COUNT(h.id) DESC")
     List<ViewStats> findHitsWithoutUri(@Param("start") LocalDateTime start,
                                        @Param("end") LocalDateTime end);
 
-    @Query("SELECT new ru.practicum.ViewStats(h.app, h.uri, COUNT(DISTINCT h.ip)) " +
+    @Query("SELECT h.app, h.uri, COUNT(h.id) AS hits " +
             "FROM Hit h " +
-            "WHERE h.timestamp BETWEEN :start AND :end " +
-            "AND (:uris IS NULL OR h.uri IN :uris) " +
+            "WHERE h.timestamp BETWEEN ?1 AND ?2 " +
+            "AND h.uri IN ?3 " +
             "GROUP BY h.app, h.uri " +
-            "ORDER BY COUNT(h.ip) DESC")
+            "ORDER BY COUNT(h.id) DESC")
     List<ViewStats> findHitsWithUri(@Param("start") LocalDateTime start,
                                     @Param("end") LocalDateTime end,
                                     @Param("uris") List<String> uris);
