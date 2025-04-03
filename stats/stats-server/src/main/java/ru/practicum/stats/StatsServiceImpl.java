@@ -1,5 +1,6 @@
 package ru.practicum.stats;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.practicum.HitRequest;
 import ru.practicum.ViewStats;
@@ -11,12 +12,12 @@ import java.util.List;
 @Component
 public class StatsServiceImpl implements StatsService {
 
-    HitRepository hitRepository;
+    private final HitRepository hitRepository;
 
+    @Autowired
     public StatsServiceImpl(HitRepository hitRepository) {
         this.hitRepository = hitRepository;
     }
-
 
     @Override
     public void hit(HitRequest hitDto) {
@@ -26,27 +27,12 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<ViewStats> stats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
-        List<Object[]> hits;
-        if (uris == null) {
-            if (unique) {
-                hits = hitRepository.findUniqueHitsWithoutUri(start, end);
-            } else {
-                hits = hitRepository.findHitsWithoutUri(start, end);
-            }
+        if (unique) {
+            return (uris == null) ? hitRepository.findUniqueHitsWithoutUri(start, end)
+                                  : hitRepository.findUniqueHitsWithUri(start, end, uris);
         } else {
-            if (unique) {
-                hits = hitRepository.findUniqueHitsWithUri(start, end, uris);
-            } else {
-                hits = hitRepository.findHitsWithUri(start, end, uris);
-            }
-
+            return (uris == null) ? hitRepository.findHitsWithoutUri(start, end)
+                                  : hitRepository.findHitsWithUri(start, end, uris);
         }
-        return hits.stream()
-                   .map(hit -> new ViewStats(
-                           hit[0].toString(),
-                           hit[1].toString(),
-                           (long) hit[2]
-                   ))
-                   .toList();
     }
 }
