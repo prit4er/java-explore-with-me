@@ -1,7 +1,7 @@
 package ru.practicum.stats;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.practicum.HitRequest;
 import ru.practicum.ViewStats;
 import ru.practicum.mappers.HitMapper;
@@ -9,7 +9,7 @@ import ru.practicum.mappers.HitMapper;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Component
+@Service
 public class StatsServiceImpl implements StatsService {
 
     private final HitRepository hitRepository;
