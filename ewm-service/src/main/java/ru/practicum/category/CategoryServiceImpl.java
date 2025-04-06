@@ -30,11 +30,10 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryMapper.toDto(saved);
     }
 
-
     @Override
     public CategoryDto update(Long id, CategoryRequest categoryRequest) {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Категория не найдена: id = " + id));
+                                              .orElseThrow(() -> new NotFoundException("Категория не найдена: id = " + id));
 
         if (!category.getName().equalsIgnoreCase(categoryRequest.getName())) {
             checkNameUnique(categoryRequest.getName());
