@@ -1,17 +1,4 @@
 services:
-  stats-server:
-    build: stats/stats-server
-    image: stats-server
-    container_name: stats-server
-    ports:
-      - "9090:9090"
-    depends_on:
-      - stats-db
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats_db
-      - SPRING_DATASOURCE_USERNAME=user
-      - SPRING_DATASOURCE_PASSWORD=12345
-
   stats-db:
     image: postgres:16.1
     container_name: stats-db
@@ -21,25 +8,51 @@ services:
       - POSTGRES_PASSWORD=12345
       - POSTGRES_USER=user
       - POSTGRES_DB=stats_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d stats_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
-  ewm-service:
-    build: ewm-service
-    image: ewm-service
-    container_name: ewm-service
+  stats-server:
+    build: stats/stats-server
+    container_name: stats-server
     ports:
-      - "8080:8080"
+      - "9090:9090"
     depends_on:
-      - ewm-db
+      stats-db:
+        condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats_db
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=12345
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+
   ewm-db:
     image: postgres:16.1
     container_name: ewm-db
     ports:
-      - "6432:5432"
+      - "6432:5432"  # Внешний порт 6432 мапится на внутренний 5432
     environment:
       - POSTGRES_PASSWORD=12345
       - POSTGRES_USER=user
       - POSTGRES_DB=ewm_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d ewm_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ewm-service:
+    build: ewm-service
+    container_name: ewm-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      ewm-db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm_db  # Используем внутренний порт
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=12345
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect

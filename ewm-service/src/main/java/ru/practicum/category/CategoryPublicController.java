@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping(path = "/categories")
 public class CategoryPublicController {
 
-    CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -30,7 +30,7 @@ public class CategoryPublicController {
         return categoryService.getCategories(from, size);
     }
 
-    @GetMapping("/{catId}")
+    @GetMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
     public CategoryDto getCategoryId(@PathVariable Long categoryId) {
         return categoryService.getCategoryById(categoryId);
