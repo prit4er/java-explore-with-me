@@ -15,7 +15,7 @@ services:
       retries: 10
 
   stats-server:
-    build: stats/stats-server
+    build: ./stats/stats-server
     container_name: stats-server
     ports:
       - "9090:9090"
@@ -44,13 +44,13 @@ services:
       retries: 10
 
   ewm-service:
-    build: ewm-service
+    build: ./ewm-service
     container_name: ewm-service
     ports:
       - "8080:8080"
     depends_on:
-      ewm-db:
-        condition: service_healthy
+      - ewm-db
+      - stats-server
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm_db  # Используем внутренний порт
       - SPRING_DATASOURCE_USERNAME=user
