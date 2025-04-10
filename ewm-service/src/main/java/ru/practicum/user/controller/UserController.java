@@ -31,21 +31,21 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto create(@RequestBody @Valid NewUserRequest newUserRequest){
+    public UserDto create(@RequestBody @Valid NewUserRequest newUserRequest) {
         return userService.create(newUserRequest);
     }
 
     @GetMapping
-    public List<UserDto>  get(@RequestParam(value = "ids", required = false) List<Long> ids,
-                       @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
-                       @RequestParam(value = "size", defaultValue = "10") @Positive Integer size) {
+    public List<UserDto> get(@RequestParam(value = "ids", required = false) List<Long> ids,
+                             @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
+                             @RequestParam(value = "size", defaultValue = "10") @Positive Integer size) {
         return userService.get(ids, from, size);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id){
-         userService.delete(id);
+    public void delete(@PathVariable Long id) {
+        userService.delete(id);
     }
 
 }

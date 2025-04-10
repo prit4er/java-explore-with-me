@@ -33,7 +33,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponse handleForbiddenException(ForbiddenException e){
+    public ErrorResponse handleForbiddenException(ForbiddenException e) {
         return new ErrorResponse(
                 "ForbiddenException",
                 e.getMessage(),
@@ -42,7 +42,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ErrorResponse handleValidationException(ValidationException e){
+    public ErrorResponse handleValidationException(ValidationException e) {
         return new ErrorResponse(
                 "ValidationException",
                 e.getMessage(),
