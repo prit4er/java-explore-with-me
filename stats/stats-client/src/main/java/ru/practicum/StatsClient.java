@@ -11,7 +11,6 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-
 @Component
 public class StatsClient {
     private final RestClient restClient;

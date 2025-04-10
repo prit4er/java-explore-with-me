@@ -30,4 +30,23 @@ public class ErrorHandler {
                 LocalDateTime.now()
         );
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleForbiddenException(ForbiddenException e){
+        return new ErrorResponse(
+                "ForbiddenException",
+                e.getMessage(),
+                LocalDateTime.now()
+        );
+    }
+
+    @ExceptionHandler
+    public ErrorResponse handleValidationException(ValidationException e){
+        return new ErrorResponse(
+                "ValidationException",
+                e.getMessage(),
+                LocalDateTime.now()
+        );
+    }
 }
