@@ -47,8 +47,8 @@ public class EventControllerPublic {
                                       sort, from, size, request);
     }
 
-    @GetMapping("/{eventId}")
-    public EventDtoWithViews getEventById(@PathVariable Long eventId, HttpServletRequest request) throws Exception {
-        return eventService.getEventById(eventId, request);
+    @GetMapping("/{id}")
+    public EventDtoWithViews getEventById(@PathVariable Long id, HttpServletRequest request) throws Exception {
+        return eventService.getEventById(id, request);
     }
 }
