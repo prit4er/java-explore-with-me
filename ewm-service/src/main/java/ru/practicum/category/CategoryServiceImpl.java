@@ -7,6 +7,7 @@ import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.CategoryRequest;
 import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.category.model.Category;
+import ru.practicum.events.EventRepository;
 import ru.practicum.exeptions.ConflictException;
 import ru.practicum.exeptions.NotFoundException;
 
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final EventRepository eventRepository;
 
     @Override
     public CategoryDto create(CategoryRequest categoryRequest) {
@@ -48,6 +50,10 @@ public class CategoryServiceImpl implements CategoryService {
     public void delete(Long id) {
         if (!categoryRepository.existsById(id)) {
             throw new NotFoundException("Категория не найдена: id = " + id);
+        }
+        if (eventRepository.existsById(id)) {
+            throw new ConflictException("Cannot delete category with ID " + id +
+                                                " because it's being used by events");
         }
         categoryRepository.deleteById(id);
     }
