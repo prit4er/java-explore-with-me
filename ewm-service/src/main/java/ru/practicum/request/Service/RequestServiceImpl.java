@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.events.EventRepository;
 import ru.practicum.events.model.Event;
 import ru.practicum.events.model.State;
+import ru.practicum.exeptions.ConflictException;
 import ru.practicum.exeptions.ForbiddenException;
 import ru.practicum.exeptions.NotFoundException;
 import ru.practicum.request.RequestRepository;
@@ -159,7 +160,7 @@ public class RequestServiceImpl implements RequestService {
     private void validateParticipantLimit(Event event) {
         if (event.getParticipantLimit() > 0 &&
                 requestRepository.countByEventIdAndStatus(event.getId(), CONFIRMED) >= event.getParticipantLimit()) {
-            throw new ForbiddenException("Достигнуто максимальное количество участников");
+            throw new ConflictException("Достигнуто максимальное количество участников");
         }
     }
 
