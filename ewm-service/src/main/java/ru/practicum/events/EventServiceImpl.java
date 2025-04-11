@@ -396,7 +396,7 @@ public class EventServiceImpl implements EventService {
         String start = event.getCreatedOn().minusSeconds(1).format(DATE_TIME_FORMATTER);
         String end = LocalDateTime.now().format(DATE_TIME_FORMATTER);
 
-        List<ViewStats> response = statsClient.stats(
+        List<ViewStats> response = statsClient.getStats(
                 start,
                 end,
                 List.of(request.getRequestURI()),
@@ -453,7 +453,7 @@ public class EventServiceImpl implements EventService {
         String startStr = start.get().format(DATE_TIME_FORMATTER);
         String endStr = LocalDateTime.now().format(DATE_TIME_FORMATTER);
 
-        List<ViewStats> response = statsClient.stats(startStr, endStr, uris, true);
+        List<ViewStats> response = statsClient.getStats(startStr, endStr, uris, true);
 
         List<Long> ids = events.stream().map(Event::getId).collect(Collectors.toList());
         Map<Long, Long> confirmedRequests = requestRepository.findAllByEventIdInAndStatus(ids, CONFIRMED)
@@ -495,7 +495,7 @@ public class EventServiceImpl implements EventService {
         String startStr = start.get().format(DATE_TIME_FORMATTER);
         String endStr = LocalDateTime.now().format(DATE_TIME_FORMATTER);
 
-        List<ViewStats> response = statsClient.stats(startStr, endStr, uris, true);
+        List<ViewStats> response = statsClient.getStats(startStr, endStr, uris, true);
 
         List<Long> ids = events.stream().map(Event::getId).collect(Collectors.toList());
         Map<Long, Long> confirmedRequests = requestRepository.findAllByEventIdInAndStatus(ids, CONFIRMED)
