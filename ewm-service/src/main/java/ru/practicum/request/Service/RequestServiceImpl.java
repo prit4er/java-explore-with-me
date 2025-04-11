@@ -146,13 +146,13 @@ public class RequestServiceImpl implements RequestService {
 
     private void validateAddRequest(Long userId, Event event) {
         if (!event.getState().equals(State.PUBLISHED)) {
-            throw new ForbiddenException("Событие должно быть опубликовано");
+            throw new ConflictException("Событие должно быть опубликовано");
         }
         if (requestRepository.existsByRequesterIdAndEventId(userId, event.getId())) {
-            throw new ForbiddenException("Запрос уже существует");
+            throw new ConflictException("Запрос уже существует");
         }
         if (userId.equals(event.getInitiator().getId())) {
-            throw new ForbiddenException("Создатель события не может отправить запрос на участие");
+            throw new ConflictException("Создатель события не может отправить запрос на участие");
         }
         validateParticipantLimit(event);
     }

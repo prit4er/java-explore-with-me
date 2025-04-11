@@ -26,7 +26,7 @@ import ru.practicum.events.model.Event;
 import ru.practicum.events.model.State;
 import ru.practicum.events.model.StateActionAdmin;
 import ru.practicum.events.model.StateActionPrivate;
-import ru.practicum.exeptions.ForbiddenException;
+import ru.practicum.exeptions.ConflictException;
 import ru.practicum.exeptions.NotFoundException;
 import ru.practicum.exeptions.ValidationException;
 import ru.practicum.locations.LocationRepository;
@@ -96,7 +96,7 @@ public class EventServiceImpl implements EventService {
                                      .orElseThrow(() -> new NotFoundException("Событие с ID " + eventId + " не найдено"));
 
         if (event.getState() == PUBLISHED) {
-            throw new ForbiddenException("Нельзя обновить событие, которое уже опубликовано");
+            throw new ConflictException("Нельзя обновить событие, которое уже опубликовано");
         }
 
         updateEventFields(event, updateEvent);
@@ -476,13 +476,13 @@ public class EventServiceImpl implements EventService {
         StateActionAdmin action = StateActionAdmin.valueOf(stateAction);
         if (action == PUBLISH_EVENT) {
             if (!event.getState().equals(PENDING)) {
-                throw new ForbiddenException("Событие должно быть в PENDING");
+                throw new ConflictException("Событие должно быть в PENDING");
             }
             event.setState(PUBLISHED);
             event.setPublishedOn(LocalDateTime.now());
         } else if (action == REJECT_EVENT) {
             if (event.getState().equals(PUBLISHED)) {
-                throw new ForbiddenException("Событие уже опубликовано");
+                throw new ConflictException("Событие уже опубликовано");
             }
             event.setState(State.CANCELED);
         }

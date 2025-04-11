@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.exeptions.ForbiddenException;
+import ru.practicum.exeptions.ConflictException;
 import ru.practicum.exeptions.NotFoundException;
 import ru.practicum.user.dto.NewUserRequest;
 import ru.practicum.user.dto.UserDto;
@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     public UserDto create(NewUserRequest newUserRequest) {
 
         if (!userRepository.findByEmailIgnoreCase(newUserRequest.getEmail()).isEmpty()) {
-            throw new ForbiddenException("Email уже используется");
+            throw new ConflictException("Email уже используется");
         }
 
         return UserMapper.toDto(userRepository.save(UserMapper.toEntity(newUserRequest)));
