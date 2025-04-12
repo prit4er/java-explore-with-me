@@ -6,6 +6,7 @@ import ru.practicum.HitRequest;
 import ru.practicum.ViewStats;
 import ru.practicum.mappers.HitMapper;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,9 +28,14 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public List<ViewStats> stats(LocalDateTime start, LocalDateTime end,
                                  List<String> uris, boolean unique) {
+
         List<Object[]> results = unique ?
                                  hitRepository.findUniqueStats(start, end, uris) :
                                  hitRepository.findAllStats(start, end, uris);
+
+        if (start != null && end != null && start.isAfter(end)) {
+            throw new DateTimeException("Не верный диапазон поиска");
+        }
 
         return results.stream()
                       .map(r -> new ViewStats(
