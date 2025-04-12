@@ -6,11 +6,12 @@ import ru.practicum.locations.model.Location;
 
 @UtilityClass
 public class LocationMapper {
-    public Location mapToLocation(LocationDto locationDto) {
+
+    public Location toEntity(LocationDto locationDto) {
         return new Location(locationDto.getLat(), locationDto.getLon());
     }
 
-    public LocationDto mapToLocationDto(Location location) {
+    public LocationDto toDto(Location location) {
         return new LocationDto(location.getLat(), location.getLon());
     }
 }

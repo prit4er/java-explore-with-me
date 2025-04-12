@@ -1,10 +1,10 @@
-package ru.practicum.request;
+package ru.practicum.request.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.request.dto.ConfirmedRequests;
-import ru.practicum.request.mapper.ParticipationRequest;
+import ru.practicum.request.dto.ParticipationRequest;
 import ru.practicum.request.model.RequestStatus;
 
 import java.util.List;

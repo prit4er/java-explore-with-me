@@ -1,4 +1,4 @@
-package ru.practicum.category;
+package ru.practicum.category.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -7,7 +7,8 @@ import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.CategoryRequest;
 import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.category.model.Category;
-import ru.practicum.events.EventRepository;
+import ru.practicum.category.repository.CategoryRepository;
+import ru.practicum.events.repository.EventRepository;
 import ru.practicum.exeptions.ConflictException;
 import ru.practicum.exeptions.NotFoundException;
 

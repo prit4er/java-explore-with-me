@@ -1,4 +1,4 @@
-package ru.practicum.compilations;
+package ru.practicum.compilations.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,16 +6,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.compilations.repository.CompilationRepository;
 import ru.practicum.compilations.dto.CompilationDto;
 import ru.practicum.compilations.dto.NewCompilationDto;
 import ru.practicum.compilations.dto.UpdateCompilationRequest;
 import ru.practicum.compilations.mapper.CompilationMapper;
 import ru.practicum.compilations.model.Compilation;
-import ru.practicum.events.EventRepository;
+import ru.practicum.events.repository.EventRepository;
 import ru.practicum.events.mapper.EventMapper;
 import ru.practicum.events.model.Event;
 import ru.practicum.exeptions.NotFoundException;
-import ru.practicum.request.RequestRepository;
+import ru.practicum.request.repository.RequestRepository;
 import ru.practicum.request.dto.ConfirmedRequests;
 
 import java.util.List;

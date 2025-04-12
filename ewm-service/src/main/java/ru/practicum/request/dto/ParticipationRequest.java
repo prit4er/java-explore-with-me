@@ -1,4 +1,4 @@
-package ru.practicum.request.mapper;
+package ru.practicum.request.dto;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

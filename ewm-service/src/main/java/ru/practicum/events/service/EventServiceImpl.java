@@ -1,4 +1,4 @@
-package ru.practicum.events;
+package ru.practicum.events.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.HitRequest;
 import ru.practicum.StatsClient;
 import ru.practicum.ViewStats;
-import ru.practicum.category.CategoryRepository;
+import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.category.model.Category;
 import ru.practicum.events.dto.EventDto;
 import ru.practicum.events.dto.EventDtoWithViews;
@@ -26,15 +26,16 @@ import ru.practicum.events.model.Event;
 import ru.practicum.events.model.State;
 import ru.practicum.events.model.StateActionAdmin;
 import ru.practicum.events.model.StateActionPrivate;
+import ru.practicum.events.repository.EventRepository;
 import ru.practicum.exeptions.ConflictException;
 import ru.practicum.exeptions.NotFoundException;
 import ru.practicum.exeptions.ValidationException;
-import ru.practicum.locations.LocationRepository;
+import ru.practicum.locations.repository.LocationRepository;
 import ru.practicum.locations.mapper.LocationMapper;
 import ru.practicum.locations.model.Location;
-import ru.practicum.request.RequestRepository;
+import ru.practicum.request.repository.RequestRepository;
 import ru.practicum.request.dto.ConfirmedRequests;
-import ru.practicum.user.UserRepository;
+import ru.practicum.user.repository.UserRepository;
 import ru.practicum.user.model.User;
 
 import java.time.LocalDateTime;
@@ -80,7 +81,7 @@ public class EventServiceImpl implements EventService {
 
         User user = findUserById(userId);
         Category category = findCategoryById(newEventRequest.getCategory());
-        Location location = getOrCreateLocation(LocationMapper.mapToLocation(newEventRequest.getLocation()));
+        Location location = getOrCreateLocation(LocationMapper.toEntity(newEventRequest.getLocation()));
 
         Event event = EventMapper.matToEvent(newEventRequest, user, category, location, PENDING);
 
@@ -326,7 +327,7 @@ public class EventServiceImpl implements EventService {
         Optional.ofNullable(updateEvent.getEventDate()).ifPresent(this::checkActualTime);
 
         Optional.ofNullable(updateEvent.getLocation())
-                .map(LocationMapper::mapToLocation)
+                .map(LocationMapper::toEntity)
                 .map(this::getOrCreateLocation)
                 .ifPresent(event::setLocation);
 
@@ -512,7 +513,7 @@ public class EventServiceImpl implements EventService {
             event.setEventDate(updateEvent.getEventDate());
         }
         if (updateEvent.getLocation() != null) {
-            event.setLocation(getOrCreateLocation(LocationMapper.mapToLocation(updateEvent.getLocation())));
+            event.setLocation(getOrCreateLocation(LocationMapper.toEntity(updateEvent.getLocation())));
         }
         if (updateEvent.getPaid() != null) {
             event.setPaid(updateEvent.getPaid());

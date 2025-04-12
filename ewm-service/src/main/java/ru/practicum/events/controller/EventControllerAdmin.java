@@ -6,7 +6,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.events.EventService;
+import ru.practicum.events.service.EventService;
 import ru.practicum.events.dto.EventDto;
 import ru.practicum.events.dto.EventDtoWithViews;
 import ru.practicum.events.dto.UpdateEventAdminRequest;
