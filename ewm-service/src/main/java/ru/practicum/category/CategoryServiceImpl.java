@@ -48,13 +48,19 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(Long id) {
+        // Проверяем, существует ли категория
         if (!categoryRepository.existsById(id)) {
             throw new NotFoundException("Категория не найдена: id = " + id);
         }
-        if (eventRepository.existsById(id)) {
+
+        // Проверяем, используется ли категория в событиях
+        boolean isUsed = eventRepository.existsByCategoryId(id);
+        if (isUsed) {
             throw new ConflictException("Cannot delete category with ID " + id +
                                                 " because it's being used by events");
         }
+
+        // Удаляем категорию
         categoryRepository.deleteById(id);
     }
 

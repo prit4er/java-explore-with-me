@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @RestControllerAdvice
 public class ErrorHandler {
@@ -48,6 +49,17 @@ public class ErrorHandler {
                 "ValidationException",
                 e.getMessage(),
                 LocalDateTime.now()
+        );
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return Map.of(
+                "timestamp", LocalDateTime.now().toString(),
+                "status", "400",
+                "error", "Bad Request",
+                "message", ex.getMessage()
         );
     }
 }
