@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.HitRequest;
 import ru.practicum.ViewStats;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,9 +19,9 @@ public class StatsController {
     private final StatsService statsService;
 
     @PostMapping("/hit")
-    public ResponseEntity<Void> hit(@RequestBody HitRequest hitRequest) {
+    public ResponseEntity<HitRequest> hit(@RequestBody HitRequest hitRequest) {
         statsService.hit(hitRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.created(URI.create("/hit")).body(hitRequest);
     }
 
     @GetMapping("/stats")
