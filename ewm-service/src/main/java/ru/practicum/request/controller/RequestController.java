@@ -20,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users/{userId}/requests")
 public class RequestController {
+
     private final RequestService requestService;
 
     @PostMapping

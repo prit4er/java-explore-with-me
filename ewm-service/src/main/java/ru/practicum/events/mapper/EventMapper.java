@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @UtilityClass
 public class EventMapper {
 
-    public Event matToEvent(NewEventRequest newEventRequest) {
+    public Event toEntity(NewEventRequest newEventRequest) {
         return Event.builder()
                     .annotation(newEventRequest.getAnnotation())
                     .description(newEventRequest.getDescription())
@@ -33,7 +33,7 @@ public class EventMapper {
                     .build();
     }
 
-    public Event matToEvent(NewEventRequest newEventRequest, User user, Category category, Location location, State state) {
+    public Event toEntity(NewEventRequest newEventRequest, User user, Category category, Location location, State state) {
         return Event.builder()
                     .annotation(newEventRequest.getAnnotation())
                     .category(category)
@@ -50,7 +50,7 @@ public class EventMapper {
                     .build();
     }
 
-    public EventDto mapToEventFullDto(Event event, Long confirmedRequests) {
+    public EventDto toDto(Event event, Long confirmedRequests) {
         return EventDto.builder()
                        .id(event.getId())
                        .annotation(event.getAnnotation())
@@ -70,7 +70,7 @@ public class EventMapper {
                        .build();
     }
 
-    public EventShortDto mapToEventShortDto(Event event, Long confirmedRequests) {
+    public EventShortDto toShortDto(Event event, Long confirmedRequests) {
         return EventShortDto.builder()
                             .id(event.getId())
                             .annotation(event.getAnnotation())
@@ -83,7 +83,7 @@ public class EventMapper {
                             .build();
     }
 
-    public EventDtoWithViews mapToEventFullDtoWithViews(Event event, Long views, Long confirmedRequests) {
+    public EventDtoWithViews toDtoWithViews(Event event, Long views, Long confirmedRequests) {
         return EventDtoWithViews.builder()
                                 .id(event.getId())
                                 .annotation(event.getAnnotation())
@@ -104,7 +104,7 @@ public class EventMapper {
                                 .build();
     }
 
-    public EventShortDtoWithViews mapToEventShortDtoWithViews(Event event, Long views, Long confirmedRequests) {
+    public EventShortDtoWithViews toShortDtoWithViews(Event event, Long views, Long confirmedRequests) {
         return EventShortDtoWithViews.builder()
                                      .id(event.getId())
                                      .annotation(event.getAnnotation())

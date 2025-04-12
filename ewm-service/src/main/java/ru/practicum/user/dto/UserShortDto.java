@@ -1,15 +1,15 @@
 package ru.practicum.user.dto;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor()
 public class UserShortDto {
 
-    Long id;
-    String name;
+    private Long id;
+
+    private String name;
 }

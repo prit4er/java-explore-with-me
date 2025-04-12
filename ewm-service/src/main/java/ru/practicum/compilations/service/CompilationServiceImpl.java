@@ -31,6 +31,7 @@ import static ru.practicum.request.model.RequestStatus.CONFIRMED;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CompilationServiceImpl implements CompilationService {
+
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
@@ -53,10 +54,11 @@ public class CompilationServiceImpl implements CompilationService {
 
             Map<Long, Long> confirmedRequests = requestRepository.findAllByEventIdInAndStatus(ids, CONFIRMED)
                                                                  .stream()
-                                                                 .collect(Collectors.toMap(ConfirmedRequests::getEvent, ConfirmedRequests::getCount));
+                                                                 .collect(Collectors.toMap(ConfirmedRequests::getEvent,
+                                                                                           ConfirmedRequests::getCount));
 
             compilationDto.setEvents(compilation.getEvents().stream()
-                                                .map(event -> EventMapper.mapToEventShortDto(event, confirmedRequests.get(event.getId())))
+                                                .map(event -> EventMapper.toShortDto(event, confirmedRequests.get(event.getId())))
                                                 .collect(Collectors.toList()));
         }
 
@@ -94,9 +96,10 @@ public class CompilationServiceImpl implements CompilationService {
             List<Long> ids = compilation.getEvents().stream().map(Event::getId).collect(Collectors.toList());
             Map<Long, Long> confirmedRequests = requestRepository.findAllByEventIdInAndStatus(ids, CONFIRMED)
                                                                  .stream()
-                                                                 .collect(Collectors.toMap(ConfirmedRequests::getEvent, ConfirmedRequests::getCount));
+                                                                 .collect(Collectors.toMap(ConfirmedRequests::getEvent,
+                                                                                           ConfirmedRequests::getCount));
             compilationDto.setEvents(compilation.getEvents().stream()
-                                                .map(event -> EventMapper.mapToEventShortDto(event, confirmedRequests.get(event.getId())))
+                                                .map(event -> EventMapper.toShortDto(event, confirmedRequests.get(event.getId())))
                                                 .collect(Collectors.toList()));
         }
 
@@ -122,14 +125,16 @@ public class CompilationServiceImpl implements CompilationService {
 
         Map<Long, Long> confirmedRequests = requestRepository.findAllByEventIdInAndStatus(eventIds, CONFIRMED)
                                                              .stream()
-                                                             .collect(Collectors.toMap(ConfirmedRequests::getEvent, ConfirmedRequests::getCount));
+                                                             .collect(Collectors.toMap(ConfirmedRequests::getEvent,
+                                                                                       ConfirmedRequests::getCount));
 
         return compilations.stream()
                            .map(compilation -> {
                                CompilationDto compilationDto = CompilationMapper.toDto(compilation);
                                if (compilation.getEvents() != null) {
                                    compilationDto.setEvents(compilation.getEvents().stream()
-                                                                       .map(event -> EventMapper.mapToEventShortDto(event, confirmedRequests.get(event.getId())))
+                                                                       .map(event -> EventMapper.toShortDto(event, confirmedRequests.get(
+                                                                               event.getId())))
                                                                        .collect(Collectors.toList()));
                                }
                                return compilationDto;
@@ -146,9 +151,10 @@ public class CompilationServiceImpl implements CompilationService {
             List<Long> ids = compilation.getEvents().stream().map(Event::getId).collect(Collectors.toList());
             Map<Long, Long> confirmedRequests = requestRepository.findAllByEventIdInAndStatus(ids, CONFIRMED)
                                                                  .stream()
-                                                                 .collect(Collectors.toMap(ConfirmedRequests::getEvent, ConfirmedRequests::getCount));
+                                                                 .collect(Collectors.toMap(ConfirmedRequests::getEvent,
+                                                                                           ConfirmedRequests::getCount));
             compilationDto.setEvents(compilation.getEvents().stream()
-                                                .map(event -> EventMapper.mapToEventShortDto(event, confirmedRequests.get(event.getId())))
+                                                .map(event -> EventMapper.toShortDto(event, confirmedRequests.get(event.getId())))
                                                 .collect(Collectors.toList()));
         }
 
@@ -164,6 +170,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     private Compilation getCompilation(Long compilationId) {
         return compilationRepository.findById(compilationId).orElseThrow(() ->
-                                                                                 new NotFoundException("Подборка с id " + compilationId + " не найдена"));
+                                                                                 new NotFoundException(
+                                                                                         "Подборка с id " + compilationId + " не найдена"));
     }
 }

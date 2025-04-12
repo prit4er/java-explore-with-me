@@ -115,12 +115,13 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private Event getEventByInitiator(Long userId, Long eventId) {
-        return eventRepository.findByIdAndInitiatorId(eventId, userId).orElseThrow(() ->
-                                                                                           new NotFoundException("Событие с ID " + eventId +
-                                                                                                                         " не найдено для" +
-                                                                                                                         " инициатора с " +
-                                                                                                                         "ID " +
-                                                                                                                         userId));
+        return eventRepository.findByIdAndInitiatorId(eventId, userId)
+                              .orElseThrow(() ->
+                                                   new NotFoundException("Событие с ID " + eventId +
+                                                                                 " не найдено для" +
+                                                                                 " инициатора с " +
+                                                                                 "ID " +
+                                                                                 userId));
     }
 
     private User getUser(Long userId) {
@@ -135,13 +136,14 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private ParticipationRequest getRequestByUser(Long userId, Long requestId) {
-        return requestRepository.findByIdAndRequesterId(requestId, userId).orElseThrow(() ->
-                                                                                               new NotFoundException(
-                                                                                                       "Запрос с ID " + requestId +
-                                                                                                               " не найден или " +
-                                                                                                               "пользователь с ID " +
-                                                                                                               userId +
-                                                                                                               " не является инициатором"));
+        return requestRepository.findByIdAndRequesterId(requestId, userId)
+                                .orElseThrow(() ->
+                                                     new NotFoundException(
+                                                             "Запрос с ID " + requestId +
+                                                                     " не найден или " +
+                                                                     "пользователь с ID " +
+                                                                     userId +
+                                                                     " не является инициатором"));
     }
 
     private void validateAddRequest(Long userId, Event event) {

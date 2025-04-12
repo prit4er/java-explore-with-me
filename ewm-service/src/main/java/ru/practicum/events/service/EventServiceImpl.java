@@ -68,7 +68,7 @@ public class EventServiceImpl implements EventService {
     private final RequestRepository requestRepository;
     private final StatsClient statsClient;
 
-    @Value("${app:ewm-service}") // Значение по умолчанию
+    @Value("${app:ewm-service}")
     private String app;
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -83,9 +83,9 @@ public class EventServiceImpl implements EventService {
         Category category = findCategoryById(newEventRequest.getCategory());
         Location location = getOrCreateLocation(LocationMapper.toEntity(newEventRequest.getLocation()));
 
-        Event event = EventMapper.matToEvent(newEventRequest, user, category, location, PENDING);
+        Event event = EventMapper.toEntity(newEventRequest, user, category, location, PENDING);
 
-        return EventMapper.mapToEventFullDto(eventRepository.save(event), 0L);
+        return EventMapper.toDto(eventRepository.save(event), 0L);
     }
 
     @Override
@@ -102,8 +102,8 @@ public class EventServiceImpl implements EventService {
 
         updateEventFields(event, updateEvent);
 
-        return EventMapper.mapToEventFullDto(eventRepository.save(event),
-                                             requestRepository.countByEventIdAndStatus(eventId, CONFIRMED));
+        return EventMapper.toDto(eventRepository.save(event),
+                                 requestRepository.countByEventIdAndStatus(eventId, CONFIRMED));
     }
 
     @Override
@@ -113,7 +113,7 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
                                      .orElseThrow(() -> new NotFoundException("Событие с ID " + eventId + " не найдено"));
 
-        return EventMapper.mapToEventFullDto(event, requestRepository.countByEventIdAndStatus(eventId, CONFIRMED));
+        return EventMapper.toDto(event, requestRepository.countByEventIdAndStatus(eventId, CONFIRMED));
     }
 
     @Override
@@ -129,7 +129,7 @@ public class EventServiceImpl implements EventService {
                                                                                        ConfirmedRequests::getCount));
 
         return events.stream()
-                     .map(event -> EventMapper.mapToEventShortDto(event, confirmedRequests.getOrDefault(event.getId(), 0L)))
+                     .map(event -> EventMapper.toShortDto(event, confirmedRequests.getOrDefault(event.getId(), 0L)))
                      .collect(Collectors.toList());
     }
 
@@ -144,8 +144,8 @@ public class EventServiceImpl implements EventService {
         }
         updateEventAttributes(event, updateEvent);
 
-        return EventMapper.mapToEventFullDto(eventRepository.save(event),
-                                             requestRepository.countByEventIdAndStatus(eventId, CONFIRMED));
+        return EventMapper.toDto(eventRepository.save(event),
+                                 requestRepository.countByEventIdAndStatus(eventId, CONFIRMED));
     }
 
     @Override
@@ -155,7 +155,7 @@ public class EventServiceImpl implements EventService {
         log.info("Запрос на получение полной информации по событиям");
 
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
-            throw new IllegalArgumentException("rangeStart should be before rangeEnd");
+            throw new IllegalArgumentException("Дата начала не может быть раньше даты окончания");
         }
         Specification<Event> specification = Specification.where(null);
         if (users != null) {
@@ -245,7 +245,6 @@ public class EventServiceImpl implements EventService {
             return new ArrayList<>();
         }
 
-        // Создаем HitRequest вместо NewEventRequest
         HitRequest hitRequest = new HitRequest();
         hitRequest.setApp(app);
         hitRequest.setUri(request.getRequestURI());
@@ -261,7 +260,6 @@ public class EventServiceImpl implements EventService {
     public EventDtoWithViews getEventById(Long eventId, HttpServletRequest request) {
         log.info("Запрос на получение полной информации по событию");
 
-        // Создаем HitRequest
         HitRequest hitRequest = new HitRequest();
         hitRequest.setApp(app);
         hitRequest.setUri(request.getRequestURI());
@@ -290,13 +288,13 @@ public class EventServiceImpl implements EventService {
         // Формируем DTO результата
         EventDtoWithViews result;
         if (!response.isEmpty()) {
-            result = EventMapper.mapToEventFullDtoWithViews(
+            result = EventMapper.toDtoWithViews(
                     event,
                     response.get(0).getHits(),
                     requestRepository.countByEventIdAndStatus(eventId, CONFIRMED)
             );
         } else {
-            result = EventMapper.mapToEventFullDtoWithViews(
+            result = EventMapper.toDtoWithViews(
                     event,
                     0L,
                     requestRepository.countByEventIdAndStatus(eventId, CONFIRMED)
@@ -394,13 +392,13 @@ public class EventServiceImpl implements EventService {
                 Long views = viewsMap.getOrDefault(eventUri, 0L);
                 Long confirmed = confirmedRequests.getOrDefault(event.getId(), 0L);
 
-                result.add(EventMapper.mapToEventFullDtoWithViews(event, views, confirmed));
+                result.add(EventMapper.toDtoWithViews(event, views, confirmed));
             }
         } catch (Exception e) {
             log.error("Error getting stats from stats-server", e);
             // Fallback - если не удалось получить статистику
             for (Event event : events) {
-                result.add(EventMapper.mapToEventFullDtoWithViews(
+                result.add(EventMapper.toDtoWithViews(
                         event,
                         0L,
                         requestRepository.countByEventIdAndStatus(event.getId(), CONFIRMED)
@@ -428,7 +426,6 @@ public class EventServiceImpl implements EventService {
             return result; // Возврат пустого результата, если список событий пуст
         }
 
-        // Используем LocalDateTime вместо строк
         LocalDateTime startTime = start.get();
         LocalDateTime endTime = LocalDateTime.now();
 
@@ -450,7 +447,7 @@ public class EventServiceImpl implements EventService {
                                  .map(ViewStats::getHits)
                                  .orElse(0L);
 
-            result.add(EventMapper.mapToEventShortDtoWithViews(
+            result.add(EventMapper.toShortDtoWithViews(
                     event,
                     views,
                     confirmedRequests.getOrDefault(event.getId(), 0L)

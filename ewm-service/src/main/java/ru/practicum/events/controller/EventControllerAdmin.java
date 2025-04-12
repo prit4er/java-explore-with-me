@@ -25,7 +25,7 @@ public class EventControllerAdmin {
     public EventDto updateEventByAdmin(@PathVariable Long eventId,
                                        @RequestBody @Valid UpdateEventAdminRequest updateEventAdminRequest) {
         return eventService.updateEventByAdmin(eventId, updateEventAdminRequest);
-    } //Обновить событие
+    }
 
     @GetMapping
     public List<EventDtoWithViews> getEventsByAdminParams(@RequestParam(required = false) List<Long> users,
@@ -39,7 +39,6 @@ public class EventControllerAdmin {
                                                           @PositiveOrZero Integer from,
                                                           @RequestParam(value = "size", defaultValue = "10")
                                                           @Positive Integer size) {
-
 
         return eventService.getEventsByAdminParams(users, states, categories, rangeStart, rangeEnd, from, size);
     }

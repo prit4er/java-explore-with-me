@@ -10,5 +10,6 @@ import lombok.Setter;
 public class ConfirmedRequests {
 
     private long count;
+
     private Long event;
 }
