@@ -12,6 +12,7 @@ public class ViewStats {
 
     @NotNull
     private String app;
+    @NotNull
     private String uri;
     private Long hits;
 }
