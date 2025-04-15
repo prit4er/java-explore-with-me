@@ -43,9 +43,7 @@ public class EventControllerPublic {
                                                   @RequestParam(value = "size", defaultValue = "10") @Positive
                                                   Integer size,
                                                   HttpServletRequest request) throws Exception {
-        if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
-            throw new IllegalArgumentException("rangeStart should be before rangeEnd");
-        } // Не помню зачем здусь сделал, может в сервис закинуть
+
         return eventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable,
                                       sort, from, size, request);
     }
