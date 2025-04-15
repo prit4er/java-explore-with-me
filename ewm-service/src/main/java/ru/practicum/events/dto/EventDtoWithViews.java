@@ -52,4 +52,6 @@ public class EventDtoWithViews {
     private String title;
 
     private Long views;
+
+    private Long comments;
 }

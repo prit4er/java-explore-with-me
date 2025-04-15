@@ -14,6 +14,7 @@ import ru.practicum.StatsClient;
 import ru.practicum.ViewStats;
 import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.category.model.Category;
+import ru.practicum.comments.repository.CommentRepository;
 import ru.practicum.events.dto.EventDto;
 import ru.practicum.events.dto.EventDtoWithViews;
 import ru.practicum.events.dto.EventShortDto;
@@ -67,6 +68,7 @@ public class EventServiceImpl implements EventService {
     private final LocationRepository locationRepository;
     private final RequestRepository requestRepository;
     private final StatsClient statsClient;
+    final CommentRepository commentRepository;
 
     @Value("${app:ewm-service}")
     private String app;
@@ -285,19 +287,21 @@ public class EventServiceImpl implements EventService {
 
         List<ViewStats> response = statsClient.getStats(startDate, endDate, uris, true);
 
+        Long comments = (long) commentRepository.findAllByEventId(eventId).size();
+
         // Формируем DTO результата
         EventDtoWithViews result;
         if (!response.isEmpty()) {
             result = EventMapper.toDtoWithViews(
                     event,
                     response.get(0).getHits(),
-                    requestRepository.countByEventIdAndStatus(eventId, CONFIRMED)
+                    requestRepository.countByEventIdAndStatus(eventId, CONFIRMED), comments
             );
         } else {
             result = EventMapper.toDtoWithViews(
                     event,
                     0L,
-                    requestRepository.countByEventIdAndStatus(eventId, CONFIRMED)
+                    requestRepository.countByEventIdAndStatus(eventId, CONFIRMED), comments
             );
         }
 
@@ -391,17 +395,20 @@ public class EventServiceImpl implements EventService {
                 String eventUri = "/events/" + event.getId();
                 Long views = viewsMap.getOrDefault(eventUri, 0L);
                 Long confirmed = confirmedRequests.getOrDefault(event.getId(), 0L);
+                long commentsCount = 0L;
 
-                result.add(EventMapper.toDtoWithViews(event, views, confirmed));
+                result.add(EventMapper.toDtoWithViews(event, views, confirmed, commentsCount));
             }
         } catch (Exception e) {
             log.error("Error getting stats from stats-server", e);
             // Fallback - если не удалось получить статистику
             for (Event event : events) {
+                Long confirmed = requestRepository.countByEventIdAndStatus(event.getId(), CONFIRMED);
                 result.add(EventMapper.toDtoWithViews(
                         event,
-                        0L,
-                        requestRepository.countByEventIdAndStatus(event.getId(), CONFIRMED)
+                        0L, // Приведено к Long
+                        confirmed,
+                        0L // Приведено к Long
                 ));
             }
         }
